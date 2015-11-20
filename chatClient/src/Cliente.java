@@ -14,11 +14,10 @@ public class Cliente extends Frame implements Runnable
     Thread t_Thread = null;
     DataOutputStream dout;
     DataInputStream din;
-    Cliente(String sUsuario,String chatwith) throws Exception
+    Cliente(String sUsuario) throws Exception
     {   //Constructor. Inicializa los sockets, conexión e interfaz
         super(sUsuario);
         this.sUsuario = sUsuario;
-        sendTo=chatwith;
         tf_Texto = new TextField(50);
         ta_AreaTexto = new TextArea(50,50);
         btn_Enviar = new Button("Enviar");
@@ -59,8 +58,7 @@ public class Cliente extends Frame implements Runnable
                     sendTo = sToken.nextToken();
                     sendTo = sendTo.substring(1);
                     System.out.println("Privado a: " + sendTo);
-                    dout.writeUTF(sendTo + " "  + "PRIVATE" + " " + tf_Texto.getText());            
-                    ta_AreaTexto.append("\n" + sUsuario + " Says:" + tf_Texto.getText());    
+                    dout.writeUTF(sendTo + " "  + "PRIVATE" + " " + sUsuario + " " + tf_Texto.getText());             
                     tf_Texto.setText("");
                 }
                 catch(Exception ex)
@@ -71,7 +69,6 @@ public class Cliente extends Frame implements Runnable
                 try
                 {
                     dout.writeUTF(sUsuario + " "  + "BROADCAST" + " " + tf_Texto.getText());            
-                    ta_AreaTexto.append("\n" + sUsuario + " Says:" + tf_Texto.getText());    
                     tf_Texto.setText("");
                 }
                 catch(Exception ex)
@@ -94,7 +91,8 @@ public class Cliente extends Frame implements Runnable
     }
     public static void main(String args[]) throws Exception
     {
-        Cliente obj_Cliente = new Cliente("b", "elias");
+        
+        Cliente obj_Cliente = new Cliente("b");
         obj_Cliente.setup();                
     }  
     
@@ -105,7 +103,7 @@ public class Cliente extends Frame implements Runnable
         {
             try
             {
-                ta_AreaTexto.append( "\n" + sendTo + " : " + din.readUTF());  
+                ta_AreaTexto.append( "\n" +  din.readUTF());  
             }
             catch(Exception ex)
             {

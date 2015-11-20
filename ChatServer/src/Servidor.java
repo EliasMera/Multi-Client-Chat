@@ -56,6 +56,7 @@ public class Servidor
                     StringTokenizer sToken = new StringTokenizer(mensajeCliente);
                     String sUsuario = sToken.nextToken();                
                     String sAccion = sToken.nextToken();
+                    boolean bEncontro = false;
                     int iContador = 0;
                     //Revisa si se desconecto.
                     if(sAccion.equals("LOGOUT"))
@@ -75,7 +76,8 @@ public class Servidor
                     {   //PRIVATE
                         //Envio de mensaje privado
                         String sMensaje = "";
-                        //Ignora el @usuario
+                        String sSendTo = sUsuario;
+                        sUsuario = sToken.nextToken();
                         sToken.nextToken();
                         while(sToken.hasMoreTokens())
                         {   //Lee el mensaje hasta el final
@@ -83,17 +85,18 @@ public class Servidor
                         }
                         for(iContador = 0; iContador < Vec_UserNames.size(); iContador++)
                         {   //Busca el usuario privado
-                            if(Vec_UserNames.elementAt(iContador).equals(sUsuario))
-                            {    
+                            if(Vec_UserNames.elementAt(iContador).equals(sUsuario) || Vec_UserNames.elementAt(iContador).equals(sSendTo))
+                            {   
+                                bEncontro = true;
                                 Socket Socket_Encontrado = (Socket)Vec_CSockets.elementAt(iContador);                            
                                 DataOutputStream streamOut = new DataOutputStream(Socket_Encontrado.getOutputStream());
-                                streamOut.writeUTF(sMensaje);                            
-                                break;
+                                streamOut.writeUTF(sUsuario + " : " + sMensaje);                            
+                                //break;
                             }
                         }
-                        if(iContador == Vec_UserNames.size())
+                        if(!bEncontro)
                         {   //Si no lo encontró, despliega que está desconectado.
-                            dOutput.writeUTF("Offline");
+                            dOutput.writeUTF("El usuario está Offline");
                         }
                     }
                     else
@@ -108,7 +111,7 @@ public class Servidor
                         {   //Busca el usuario privado
                             Socket Socket_Encontrado = (Socket)Vec_CSockets.elementAt(iContador);                            
                             DataOutputStream streamOut = new DataOutputStream(Socket_Encontrado.getOutputStream());
-                            streamOut.writeUTF(sMensaje);                            
+                            streamOut.writeUTF(sUsuario + " : " + sMensaje);                            
                         }
                         /*if(iContador == Vec_UserNames.size())
                         {   //Si no lo encontró, despliega que está desconectado.
