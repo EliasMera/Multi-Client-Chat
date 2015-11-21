@@ -1,7 +1,8 @@
 import java.net.*;
 import java.io.*;
 import java.awt.*;
-import java.util.StringTokenizer;
+import java.util.*;
+import javax.swing.*;
 
 public class Cliente extends Frame implements Runnable
 {   //Variables para interfaz y IO.
@@ -13,7 +14,7 @@ public class Cliente extends Frame implements Runnable
     String sUsuario;
     Thread t_Thread = null;
     DataOutputStream dout;
-    DataInputStream din;
+    static DataInputStream din;
     Cliente(String sUsuario) throws Exception
     {   //Constructor. Inicializa los sockets, conexión e interfaz
         super(sUsuario);
@@ -24,8 +25,8 @@ public class Cliente extends Frame implements Runnable
         btn_Cerrar = new Button("Cerrar");
         soc = new Socket("127.0.0.1", 5000);
         //Inicializa IO streams para intercambio de informacion con servidor
-        din=new DataInputStream(soc.getInputStream()); 
-        dout=new DataOutputStream(soc.getOutputStream());        
+        din = new DataInputStream(soc.getInputStream()); 
+        dout = new DataOutputStream(soc.getOutputStream());        
         dout.writeUTF(sUsuario);
         //Inicializa thread para multiusuario
         t_Thread = new Thread(this);
@@ -91,9 +92,19 @@ public class Cliente extends Frame implements Runnable
     }
     public static void main(String args[]) throws Exception
     {
-        
-        Cliente obj_Cliente = new Cliente("b");
-        obj_Cliente.setup();                
+        int iExiste;
+        String Usuario;
+        Cliente obj_Cliente;
+        do{
+        Usuario = JOptionPane.showInputDialog(null,
+        "Diga su nombre de usuario. Si se repite este mensaje es porque ya existe ese usuario.",
+        "Login",
+        JOptionPane.QUESTION_MESSAGE);
+        obj_Cliente = new Cliente(Usuario);
+        iExiste = Integer.parseInt(din.readUTF());
+        System.out.println("iExiste: " + iExiste);
+        }while(iExiste != 1);
+        obj_Cliente.setup();        
     }  
     
     @Override

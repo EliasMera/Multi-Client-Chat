@@ -37,13 +37,19 @@ public class Servidor
             //Inicializa el stream IO.
             dInput = new DataInputStream(ClientSocket.getInputStream());
             dOutput = new DataOutputStream(ClientSocket.getOutputStream());
-
+            //Revisa si existe el usuario
             String UserName = dInput.readUTF();
-            System.out.println("Entró al chat :" + UserName);
-            //Guarda usuario y socket en los vectores de manera paralela.
-            Vec_UserNames.add(UserName);
-            Vec_CSockets.add(ClientSocket);    
-            start();
+            if(Vec_UserNames.contains(UserName))
+                dOutput.writeUTF("0");
+            else
+            {
+                dOutput.writeUTF("1");
+                System.out.println("Entró al chat :" + UserName);
+                //Guarda usuario y socket en los vectores de manera paralela.
+                Vec_UserNames.add(UserName);
+                Vec_CSockets.add(ClientSocket);    
+                start();              
+            }          
         }
 
         public void run()
@@ -53,6 +59,7 @@ public class Servidor
                 try
                 {   //Recibe mensaje y revisa que tipo es. (LOGOUT || PRIVATE || BROADCAST)
                     String mensajeCliente = dInput.readUTF();
+                    System.out.println("mensaje " + mensajeCliente);
                     StringTokenizer sToken = new StringTokenizer(mensajeCliente);
                     String sUsuario = sToken.nextToken();                
                     String sAccion = sToken.nextToken();
