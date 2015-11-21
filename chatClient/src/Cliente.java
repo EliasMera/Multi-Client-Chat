@@ -15,7 +15,7 @@ public class Cliente extends Frame implements Runnable
     Thread t_Thread = null;
     DataOutputStream dout;
     static DataInputStream din;
-    Cliente(String sUsuario) throws Exception
+    Cliente(String sUsuario, String ipServidor) throws Exception
     {   //Constructor. Inicializa los sockets, conexión e interfaz
         super(sUsuario);
         this.sUsuario = sUsuario;
@@ -23,7 +23,7 @@ public class Cliente extends Frame implements Runnable
         ta_AreaTexto = new TextArea(50,50);
         btn_Enviar = new Button("Enviar");
         btn_Cerrar = new Button("Cerrar");
-        soc = new Socket("127.0.0.1", 5000);
+        soc = new Socket(ipServidor, 5000);
         //Inicializa IO streams para intercambio de informacion con servidor
         din = new DataInputStream(soc.getInputStream()); 
         dout = new DataOutputStream(soc.getOutputStream());        
@@ -90,17 +90,37 @@ public class Cliente extends Frame implements Runnable
         }
         return super.action(e,o);
     }
+    
+    //Pide al usuario el IP del servidor
+    private static String getIPServidor() {
+        return JOptionPane.showInputDialog(
+            null,
+            "Diga la IP del Servidor.\nFormato 125.125.125.125",
+            "Bienvenido",
+            JOptionPane.QUESTION_MESSAGE);
+    }
+    
+    //Pide al usuario su nombre de usuario
+    private static String getUsuario() {
+        return JOptionPane.showInputDialog(
+            null,
+            "Diga su nombre de usuario. Si se repite este mensaje es porque ya existe ese usuario.",
+            "Login",
+            JOptionPane.QUESTION_MESSAGE);
+    }
+    
+    
+    
     public static void main(String args[]) throws Exception
     {
+        System.out.println(InetAddress.getLocalHost());
         int iExiste;
-        String Usuario;
+        String Usuario, ipServidor;
         Cliente obj_Cliente;
         do{
-        Usuario = JOptionPane.showInputDialog(null,
-        "Diga su nombre de usuario. Si se repite este mensaje es porque ya existe ese usuario.",
-        "Login",
-        JOptionPane.QUESTION_MESSAGE);
-        obj_Cliente = new Cliente(Usuario);
+        Usuario = getUsuario();
+        ipServidor = getIPServidor();
+        obj_Cliente = new Cliente(Usuario, ipServidor);
         iExiste = Integer.parseInt(din.readUTF());
         System.out.println("iExiste: " + iExiste);
         }while(iExiste != 1);
