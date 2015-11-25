@@ -117,17 +117,10 @@ public class Cliente extends Frame implements Runnable
         int iExiste;
         String Usuario, ipServidor;
         Cliente obj_Cliente;
-        // do{
-	        Usuario = getUsuario();
-	        ipServidor = getIPServidor();
-	        System.out.println(ipServidor);
-	        obj_Cliente = new Cliente(Usuario, ipServidor);
-	        System.out.println("created client print iexiste:");
-	        // iExiste = Integer.parseInt(din.readUTF());
-	        // System.out.println(iExiste);
-	        // System.out.println("iExiste: " + iExiste);
-        // }while(iExiste != 1);
-        System.out.println("Aquiiiii");
+	Usuario = getUsuario();
+	ipServidor = getIPServidor();
+	System.out.println(ipServidor);
+	obj_Cliente = new Cliente(Usuario, ipServidor);
         obj_Cliente.setup();       
     }  
     

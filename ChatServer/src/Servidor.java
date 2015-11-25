@@ -40,17 +40,11 @@ public class Servidor
             dOutput = new DataOutputStream(ClientSocket.getOutputStream());
             //Revisa si existe el usuario
             String UserName = dInput.readUTF();
-            if(Vec_UserNames.contains(UserName))
-                dOutput.writeUTF("0");
-            else
-            {
-                dOutput.writeUTF("1");
-                System.out.println("Entró al chat :" + UserName);
-                //Guarda usuario y socket en los vectores de manera paralela.
-                Vec_UserNames.add(UserName);
-                Vec_CSockets.add(ClientSocket);    
-                start();              
-            }          
+            System.out.println("Entró al chat :" + UserName);
+            //Guarda usuario y socket en los vectores de manera paralela.
+            Vec_UserNames.add(UserName);
+            Vec_CSockets.add(ClientSocket);    
+            start();                        
         }
 
         public void run()
